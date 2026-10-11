@@ -6,25 +6,31 @@ Przenośna konfiguracja Claude Code (Windows / Linux / macOS).
 
 - `statusline.js` — pasek statusu: user@host | katalog | (gałąź git) | model |
   progress bar okna kontekstu (zielony < 100k, pomarańczowy 100k–400k, czerwony > 400k) |
-  suma tokenów sesji | koszt. Wymaga tylko Node.
+  suma tokenów sesji | koszt.
+- `install.js` — instalator: kopiuje `statusline.js` do `~/.claude/` i dopisuje wpis
+  `statusLine` do `~/.claude/settings.json` (reszta ustawień zostaje, przed zmianą robi
+  kopię `settings.json.bak-<data>`). Można go uruchamiać wielokrotnie — służy też do aktualizacji.
 
-## Instalacja na nowym komputerze
+## Instalacja / aktualizacja
+
+Wymaga Node 18+. Repo nie jest klonowane — pobierane są tylko potrzebne pliki.
+
+Linux / macOS / Windows (ta sama komenda w bash, Git Bash i PowerShell — na Windowsie użyj `curl.exe`):
 
 ```bash
-git clone <URL-repo> ~/projects/claude-conf
+curl -fsSL https://raw.githubusercontent.com/Sofia-D4L/claude-conf/main/install.js | node - https://raw.githubusercontent.com/Sofia-D4L/claude-conf/main
 ```
 
-Następnie dopisz do `~/.claude/settings.json` (tylko ten wpis — `settings.json` nie jest
-synchronizowany, bo zawiera ustawienia specyficzne dla maszyny):
+Z lokalnego checkoutu:
+
+```bash
+node install.js
+```
+
+Wynikowy wpis w `settings.json`:
 
 ```json
-"statusLine": { "type": "command", "command": "node ~/projects/claude-conf/statusline.js" }
+"statusLine": { "type": "command", "command": "node ~/.claude/statusline.js" }
 ```
 
-Ten sam wpis działa na Windowsie (Git Bash / PowerShell) i na Linuksie.
-
-## Aktualizacja
-
-```bash
-git -C ~/projects/claude-conf pull
-```
+Uwaga: `raw.githubusercontent.com` działa bez logowania tylko dla repo publicznego.

@@ -1,6 +1,6 @@
 #!/usr/bin/env node
 // Claude Code status line — cross-platform (Windows / Linux / macOS), needs only Node.
-// settings.json: "statusLine": {"type": "command", "command": "node ~/projects/claude-conf/statusline.js"}
+// settings.json: "statusLine": {"type": "command", "command": "node ~/.claude/statusline.js"}
 const fs = require('fs');
 const os = require('os');
 const path = require('path');
