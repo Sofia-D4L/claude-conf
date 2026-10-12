@@ -61,7 +61,10 @@ function main(raw) {
   parts.push(`${os.userInfo().username}@${os.hostname().toLowerCase()}`);
   const cwd = (j.workspace && j.workspace.current_dir) || j.cwd;
   if (cwd) {
-    parts.push(path.basename(cwd));
+    const home = os.homedir();
+    const rel = path.relative(home, cwd);
+    const inHome = rel === '' || (!rel.startsWith('..') && !path.isAbsolute(rel));
+    parts.push(inHome ? path.join('~', rel) : cwd);
     const branch = gitBranch(cwd);
     if (branch) parts.push(`(${branch})`);
   }
