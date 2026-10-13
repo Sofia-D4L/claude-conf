@@ -92,6 +92,26 @@ function main(raw) {
   const cost = j.cost && j.cost.total_cost_usd;
   if (cost != null) parts.push('$' + Number(cost).toFixed(2));
 
+  // Subscription rate limits (absent for API-key users): used % and reset time
+  const rl = j.rate_limits || {};
+  const limitSeg = (label, w, withDay) => {
+    if (!w || w.used_percentage == null || isNaN(w.used_percentage)) return;
+    const p = Math.round(w.used_percentage);
+    const c = p < 70 ? GREEN : p < 90 ? ORANGE : RED;
+    let s = `${label}:${c}${p}%${RESET}`;
+    if (w.resets_at) {
+      const d = new Date(w.resets_at * 1000);
+      if (!isNaN(d)) {
+        const hm = d.toLocaleTimeString('pl-PL', { hour: '2-digit', minute: '2-digit', hour12: false });
+        const day = withDay ? d.toLocaleDateString('pl-PL', { weekday: 'short' }) + ' ' : '';
+        s += ` (reset ${day}${hm})`;
+      }
+    }
+    parts.push(s);
+  };
+  limitSeg('5h', rl.five_hour, false);
+  limitSeg('7d', rl.seven_day, true);
+
   process.stdout.write(parts.join(' | '));
 }
 
